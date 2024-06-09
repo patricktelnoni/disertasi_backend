@@ -15,12 +15,15 @@ class InfoProyekController extends Controller
     public function index()
     {
         $proyekList = InfoProyek::all();
-        return InfoProyekResource::collection($proyekList);
+        return new InfoProyekResource(true, 'Detail seluruh proyek', $proyekList);
+    }
+
+    public function show($id){
+        $proyek = InfoProyek::find($id);
+        return new InfoProyekResource(true, 'Detail data proyek', $proyek);
     }
 
     public function store(Request $request){
-        
-
         $infoProyek = new InfoProyek();
 
         //$image = $request->file('image');
