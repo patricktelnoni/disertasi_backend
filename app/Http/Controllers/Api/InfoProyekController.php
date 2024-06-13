@@ -26,10 +26,6 @@ class InfoProyekController extends Controller
     public function store(Request $request){
         $infoProyek = new InfoProyek();
 
-        //$image = $request->file('image');
-        //$image->storeAs('public/storage/foto', $infoProyek->id . '.' . $image->extension());
-        
-        //$infoProyek->image              = $infoProyek->id . '.' . $image->extension();
         $infoProyek->nomor_kontrak      = $request->nomor_kontrak;
         $infoProyek->nama_paket         = $request->nama_paket;
         $infoProyek->nama_satker        = $request->nama_satker;
