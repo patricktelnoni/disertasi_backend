@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\InfoProyek;
+use App\Models\ItemPekerjaan;
 use App\Http\Resources\InfoProyekResource;
 
 class InfoProyekController extends Controller
@@ -24,7 +25,8 @@ class InfoProyekController extends Controller
     }
 
     public function store(Request $request){
-        $infoProyek = new InfoProyek();
+        $infoProyek     = new InfoProyek();
+        $itemPekerjaan  = new ItemPekerjaan();
 
         $infoProyek->nomor_kontrak      = $request->nomor_kontrak;
         $infoProyek->nama_paket         = $request->nama_paket;
@@ -38,6 +40,18 @@ class InfoProyekController extends Controller
         
         
         if($infoProyek->save()){
+            $itemPekerjaanArray = $request->item_pekerjaan;
+            
+            foreach($itemPekerjaanArray as $item){
+                $itemPekerjaan = new ItemPekerjaan();
+                $itemPekerjaan->nama_item_pekerjaan = $item['nama_item_pekerjaan'];
+                $itemPekerjaan->satuan_pekerjaan = $item['satuan_pekerjaan'];
+                $itemPekerjaan->harga_satuan = $item['harga_satuan'];
+                $itemPekerjaan->volume_pekerjaan = $item['volume_pekerjaan'];
+                $itemPekerjaan->proyek_id = $infoProyek->id;
+                $itemPekerjaan->save();
+            }
+
             return response()->json([
                 'message' => 'Data berhasil disimpan',
                 'data' => $infoProyek
