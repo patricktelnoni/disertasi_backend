@@ -40,16 +40,20 @@ class InfoProyekController extends Controller
         
         
         if($infoProyek->save()){
-            $itemPekerjaanArray = $request->item_pekerjaan;
-            
-            foreach($itemPekerjaanArray as $item){
-                $itemPekerjaan = new ItemPekerjaan();
-                $itemPekerjaan->nama_item_pekerjaan = $item['nama_item_pekerjaan'];
-                $itemPekerjaan->satuan_pekerjaan = $item['satuan_pekerjaan'];
-                $itemPekerjaan->harga_satuan = $item['harga_satuan'];
-                $itemPekerjaan->volume_pekerjaan = $item['volume_pekerjaan'];
-                $itemPekerjaan->proyek_id = $infoProyek->id;
+            $namaPekerjaanArray = json_decode($request->nama_pekerjaan, true);
+            $satuanPekerjaanArray = json_decode($request->satuan_pekerjaan, true);
+            $hargaSatuanArray = json_decode($request->harga_satuan, true);
+            $volumePekerjaanArray = json_decode($request->volume_pekerjaan, true);
+            $i=0;
+            foreach($namaPekerjaanArray as $namaPekerjaan){
+                $itemPekerjaan                      = new ItemPekerjaan();
+                $itemPekerjaan->nama_item_pekerjaan = $namaPekerjaan;
+                $itemPekerjaan->satuan_pekerjaan    = $satuanPekerjaanArray[$i];
+                $itemPekerjaan->harga_satuan        = $hargaSatuanArray[$i];
+                $itemPekerjaan->volume_pekerjaan    = $volumePekerjaanArray[$i];
+                $itemPekerjaan->proyek_id           = $infoProyek->id;
                 $itemPekerjaan->save();
+                $i++;
             }
 
             return response()->json([
