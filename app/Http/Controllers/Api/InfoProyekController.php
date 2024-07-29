@@ -15,7 +15,7 @@ class InfoProyekController extends Controller
 
     public function index()
     {
-        $proyekList = InfoProyek::all();
+        $proyekList = InfoProyek::orderBy('created_at', 'desc')->get();
         return new InfoProyekResource(true, 'Detail seluruh proyek', $proyekList);
     }
 
@@ -37,7 +37,6 @@ class InfoProyekController extends Controller
         $infoProyek->masa_pelaksanaan   = $request->masa_pelaksanaan;
         $infoProyek->tanggal_pho        = $request->tanggal_pho;
         $infoProyek->tanggal_kontrak    = $request->tanggal_kontrak;
-        
         
         if($infoProyek->save()){
             $namaPekerjaanArray = json_decode($request->nama_pekerjaan, true);

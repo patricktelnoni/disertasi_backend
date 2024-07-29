@@ -19,3 +19,4 @@ Route::apiResource('cuaca_lokasi_amp', 'App\Http\Controllers\Api\CuacaLokasiAmp'
 Route::apiResource('cuaca_lahan_penghamparan', 'App\Http\Controllers\Api\CuacaLahanPenghamparan');
 Route::apiResource('kondisi_lahan_penghamparan', 'App\Http\Controllers\Api\KondisiLahan');
 Route::apiResource('dimensi_lahan', 'App\Http\Controllers\Api\DimensiLahanController');
+Route::apiResource('item_pekerjaan', 'App\Http\Controllers\Api\ItemPekerjaanController');
