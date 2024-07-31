@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\InfoProyek;
 use App\Models\ItemPekerjaan;
 use App\Http\Resources\InfoProyekResource;
+use Illuminate\Support\Facades\DB;
 
 class InfoProyekController extends Controller
 {
@@ -24,7 +25,7 @@ class InfoProyekController extends Controller
         */ 
         //$proyekList = InfoProyek::orderBy('created_at', 'desc')->get();
         $proyekList = DB::table('table_info_proyek as tip')
-            ->select('tip.*','MAX(dl.id)','dl.persentase_progress')
+            ->select(DB::raw('tip.*','MAX(dl.id)','dl.persentase_progress'))
             ->leftJoin('item_pekerjaan as ip', 'tip.id', '=', 'ip.proyek_id')
             ->leftJoin('dimensi_lahan as dl', 'ip.id', '=', 'dl.item_pekerjaan_id')
             ->orderBy('dl.id', 'desc')
