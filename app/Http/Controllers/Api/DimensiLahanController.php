@@ -73,7 +73,7 @@ class DimensiLahanController extends Controller
         }
         else{
  
-            $dimensi_lahan->progress_biaya = $dimensi_lahan->biaya / nilai_pekerjaan * 100;
+            $dimensi_lahan->progress_biaya = $dimensi_lahan->biaya / $nilai_pekerjaan * 100;
             $dimensi_lahan->progress_pekerjaan = $dimensi_lahan->volume / $data->volume_pekerjaan * 100;
         }
        
