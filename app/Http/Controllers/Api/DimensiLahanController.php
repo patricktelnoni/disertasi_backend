@@ -58,7 +58,7 @@ class DimensiLahanController extends Controller
         
         $dimensi_lahan->volume_pekerjaan    = $volume;
         $dimensi_lahan->biaya               = $biaya;
-        $dimensi_lahan->nilai_pekerjaan     = $nilai_pekerjaan;
+        //$dimensi_lahan->nilai_pekerjaan     = $nilai_pekerjaan;
 
         $past_dimensi_lahan = DimensiLahanModel::where('item_pekerjaan_id', $request->id_item_pekerjaan)->orderBy('id', 'desc')->first();    
 
