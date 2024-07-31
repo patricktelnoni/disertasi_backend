@@ -13,10 +13,7 @@ return new class extends Migration
     {
         Schema::table('dimensi_lahan', function (Blueprint $table) {
             //
-            $table->double('volume_kumulatif');
-            $table->double('persentase_progress');
-            $table->double('biaya_kumulatif');
-            $table->foreignId('item_pekerjaan_id')->constrained('item_pekerjaan')->onDelete('cascade');
+            $table->double('volume_pekerjaan');
         });
     }
 
@@ -27,10 +24,7 @@ return new class extends Migration
     {
         Schema::table('dimensi_lahan', function (Blueprint $table) {
             //
-            $table->dropColumn('volume_kumulatif');
-            $table->dropColumn('persentase_progress');
-            $table->dropColumn('biaya_kumulatif');
-            $table->dropColumn('item_pekerjaan_id');
+            $table->dropColumn('volume_pekerjaan');
         });
     }
 };
