@@ -52,7 +52,7 @@ class DimensiLahanController extends Controller
 
         $volume = $request->panjang_pekerjaan * $request->lebar_pekerjaan * $request->tebal_pekerjaan;
 
-        $data   = ItemPekerjaanModel::where('id', $request->id_item_pekerjaan)->first();
+        $data   = ItemPekerjaan::where('id', $request->id_item_pekerjaan)->first();
 
         $biaya              = $volume * $data->harga_satuan;
         $nilai_pekerjaan    = $data->volume_pekerjaan * $data->harga_satuan;
