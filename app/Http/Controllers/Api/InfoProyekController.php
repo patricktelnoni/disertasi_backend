@@ -24,12 +24,14 @@ class InfoProyekController extends Controller
         ORDER BY dl.id DESC;
         */ 
         //$proyekList = InfoProyek::orderBy('created_at', 'desc')->get();
-        $proyekList = DB::table('table_info_proyek as tip')
-            ->select(DB::raw('tip.*','MAX(dl.id)','dl.persentase_progress'))
-            ->leftJoin('item_pekerjaan as ip', 'tip.id', '=', 'ip.proyek_id')
-            ->leftJoin('dimensi_lahan as dl', 'ip.id', '=', 'dl.item_pekerjaan_id')
-            ->orderBy('dl.id', 'desc')
-            ->get();
+        $proyekList = DB::select("
+            SELECT tip.*,  MAX(dl.id), dl.persentase_progress
+            FROM `table_info_proyek` tip
+            LEFT JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
+            LEFT JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
+            GROUP BY tip.id
+            ORDER BY dl.id DESC
+            ");
         return new InfoProyekResource(true, 'Detail seluruh proyek', $proyekList);
     }
 
