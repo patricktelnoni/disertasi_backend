@@ -74,7 +74,7 @@ class DimensiLahanController extends Controller
         else{
             $dimensi_lahan->volume_kumulatif    = $volume;
             $dimensi_lahan->biaya_kumulatif = $dimensi_lahan->biaya / $nilai_pekerjaan * 100;
-            $dimensi_lahan->persentase_progress = $dimensi_lahan->volume / $data->volume_pekerjaan * 100;
+            $dimensi_lahan->persentase_progress = $volume / $data->volume_pekerjaan * 100;
         }
        
         $dimensi_lahan->save();
