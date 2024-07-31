@@ -61,7 +61,7 @@ class DimensiLahanController extends Controller
         $dimensi_lahan->biaya               = $biaya;
         $dimensi_lahan->nilai_pekerjaan     = $nilai_pekerjaan;
 
-        $past_dimensi_lahan = DimensiLahanModel::where('proyek_id', $request->id_proyek)->orderBy('id', 'desc')->first();    
+        $past_dimensi_lahan = DimensiLahanModel::where('item_pekerjaan_id', $request->id_item_pekerjaan)->orderBy('id', 'desc')->first();    
 
         if($past_dimensi_lahan){
             $biaya_kumulatif     = $biaya + $past_dimensi_lahan->biaya_kumulatif; 
