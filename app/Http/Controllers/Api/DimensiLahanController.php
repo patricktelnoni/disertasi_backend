@@ -33,7 +33,6 @@ class DimensiLahanController extends Controller
 
         //add perhitungan biaya dan progress di sini
         
-        $dimensi_lahan->peruntukan          = $request->peruntukan;
         $dimensi_lahan->panjang             = $request->panjang_pekerjaan;
         $dimensi_lahan->lokasi_foto_panjang = $request->lokasi_foto_panjang;
         $dimensi_lahan->foto_panjang        = $request->foto_panjang;
