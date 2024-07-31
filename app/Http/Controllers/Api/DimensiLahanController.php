@@ -68,12 +68,12 @@ class DimensiLahanController extends Controller
             $progress_kumulatif  = ($volume / $data->volume_pekerjaan * 100) + $past_dimensi_lahan->progress_pekerjaan;  
             
             $dimensi_lahan->volume_kumulatif    = $volume_kumulatif;
-            $dimensi_lahan->progress_biaya      = $biaya_kumulatif;
+            $dimensi_lahan->biaya_kumulatif      = $biaya_kumulatif;
             $dimensi_lahan->progress_pekerjaan  = $progress_kumulatif;
         }
         else{
- 
-            $dimensi_lahan->progress_biaya = $dimensi_lahan->biaya / $nilai_pekerjaan * 100;
+            $dimensi_lahan->volume_kumulatif    = $volume_kumulatif;
+            $dimensi_lahan->biaya_kumulatif = $dimensi_lahan->biaya / $nilai_pekerjaan * 100;
             $dimensi_lahan->progress_pekerjaan = $dimensi_lahan->volume / $data->volume_pekerjaan * 100;
         }
        
