@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\DimensiLahanModel;
-use App\Models\ItemPekerjaanModel;
+use App\Models\ItemPekerjaan;
 use App\Http\Resources\DimensiLahanResources;
 
 class DimensiLahanController extends Controller
@@ -20,7 +20,7 @@ class DimensiLahanController extends Controller
     public function store(Request $request){
 
         $dimensi_lahan  = new DimensiLahanModel();
-        $item_pekerjaan = new ItemPekerjaanModel();
+        $item_pekerjaan = new ItemPekerjaan();
 
         $imagePanjang = $request->file('foto_panjang');
         $imagePanjang->storeAs('public/storage/foto', $imagePanjang->getClientOriginalName());
@@ -62,7 +62,7 @@ class DimensiLahanController extends Controller
         $dimensi_lahan->nilai_pekerjaan     = $nilai_pekerjaan;
 
         $past_dimensi_lahan = DimensiLahanModel::where('proyek_id', $request->id_proyek)->orderBy('id', 'desc')->first();    
-        
+
         if($past_dimensi_lahan){
             $biaya_kumulatif     = $biaya + $past_dimensi_lahan->biaya_kumulatif; 
             $volume_kumulatif    = $volume + $past_dimensi_lahan->volume_kumulatif;       
