@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\DimensiLahanModel;
 use App\Models\ItemPekerjaan;
 use App\Http\Resources\DimensiLahanResources;
+use Illuminate\Support\Facades\DB;
 
 class DimensiLahanController extends Controller
 {
