@@ -14,6 +14,15 @@ class InfoProyekController extends Controller
 {
     //
 
+    public function getDetailProgress($proyek_id){
+        $proyekList = DB::select("
+            SELECT ip.id, dl.* 
+            FROM item_pekerjaan ip
+            JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
+            WHERE ip.proyek_id = $proyek_id;
+            ");
+        return new InfoProyekResource(true, 'Detail progress seluruh proyek', $proyekList);
+    }
     public function index()
     {
         /*

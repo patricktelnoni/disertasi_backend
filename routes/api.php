@@ -7,6 +7,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/progress_proyek/{proyek_id}', 'App\Http\Controllers\Api\InfoProyekController@getDetailProgress');
 Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');
 
 Route::apiResource('restorans', 'App\Http\Controllers\Api\RestoranController');
