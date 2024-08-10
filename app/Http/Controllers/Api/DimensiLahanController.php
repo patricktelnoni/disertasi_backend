@@ -69,10 +69,10 @@ class DimensiLahanController extends Controller
                         MAX(dl.persentase_progress) as persentase_progress
                     FROM `item_pekerjaan` ip
                     LEFT JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
-                    WHERE ip.proyek_id = $request->proyek_id
+                    WHERE ip.proyek_id = ?
                     GROUP BY ip.proyek_id
                     ORDER BY dl.id DESC
-        ");
+        ")->setBindings([$request->proyek_id]);
 
         if($past_dimensi_lahan){
             $biaya_kumulatif     = $biaya + $past_dimensi_lahan->biaya_kumulatif; 
