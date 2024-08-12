@@ -18,7 +18,7 @@ class InfoProyekController extends Controller
         $proyekTotal = DB::select("
             SELECT ip.proyek_id, 
                 COUNT(ip.id) as total_item_pekerjaan, 
-                SUM(dl.persentase_progress) as total_progress, 
+                MAX(dl.persentase_progress) as total_progress, 
                 SUM(dl.biaya)as total_biaya
             FROM item_pekerjaan ip
             JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
