@@ -15,7 +15,7 @@ class InfoProyekController extends Controller
     //
 
     public function getTotalDetailProyek($proyek_id){
-        $proyekTotal = DB::select("
+        $total = DB::select("
             SELECT ip.proyek_id, 
                 COUNT(ip.id) as total_item_pekerjaan, 
                 MAX(dl.persentase_progress) as total_progress, 
@@ -26,7 +26,7 @@ class InfoProyekController extends Controller
             GROUP BY ip.proyek_id;
             
             ");
-        return $proyekTotal;
+        return ['total_biaya' => $total[0]->total_biaya, 'total_progress' => $total[0]->total_progress, 'total_item_pekerjaan' => $total[0]->total_item_pekerjaan];
     }
 
     public function getDetailProgress($proyek_id){
@@ -38,7 +38,7 @@ class InfoProyekController extends Controller
             ");
 
         $total = $this->getTotalDetailProyek($proyek_id);
-        return new InfoProyekResource(true, 'Detail progress seluruh proyek', $proyekList, $total);
+        return new InfoProyekResource(true, 'Detail progress seluruh proyek', $proyekList, $total );
     }
     public function index()
     {
