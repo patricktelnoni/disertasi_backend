@@ -23,14 +23,20 @@ class DimensiLahanController extends Controller
         $dimensi_lahan  = new DimensiLahanModel();
         $item_pekerjaan = new ItemPekerjaan();
 
-        $imagePanjang = $request->file('foto_panjang');
-        $imagePanjang->storeAs('public/storage/foto', $imagePanjang->getClientOriginalName());
+        if($request->file('foto_panjang')){
+            $imagePanjang = $request->file('foto_panjang');
+            $imagePanjang->storeAs('public/storage/foto', $imagePanjang->getClientOriginalName());
+        }
 
-        $imageLebar = $request->file('foto_lebar');
-        $imageLebar->storeAs('public/storage/foto', $imageLebar->getClientOriginalName());
-
-        $imageTebal = $request->file('foto_tebal');
-        $imageTebal->storeAs('public/storage/foto', $imageTebal->getClientOriginalName());
+        if($request->file('foto_lebar')){
+            $imageLebar = $request->file('foto_lebar');
+            $imageLebar->storeAs('public/storage/foto', $imageLebar->getClientOriginalName());
+        }
+        
+        if($request->file('foto_tebal')){
+            $imageTebal = $request->file('foto_tebal');
+            $imageTebal->storeAs('public/storage/foto', $imageTebal->getClientOriginalName());
+        }
 
         //add perhitungan biaya dan progress di sini
         
