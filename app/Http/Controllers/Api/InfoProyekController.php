@@ -61,14 +61,18 @@ class InfoProyekController extends Controller
         
         $totalDana      = 0;
         $nilaiKontrak   = 0;
-
-        foreach($progressProyek as $progress){
-            $totalDana      += $progress->biaya_total;
-            $nilaiKontrak   = $progress->nilai_kontrak;
+        $progress       = 0;
+        
+        if($progressProyek != null){
+            foreach($progressProyek as $prog){
+                $totalDana      += $prog->biaya_total;
+                $nilaiKontrak   = $prog->nilai_kontrak;
+            }
+    
+            $progress = ($totalDana / $nilaiKontrak) * 100;
+            $progress = $progress > 0 ? $progress : 0;
         }
-
-        $progress = ($totalDana / $nilaiKontrak) * 100;
-        $progress = $progress > 0 ? $progress : 0;
+        
 
         return new InfoProyekResource(true, 'Detail progress seluruh proyek', $progressProyek, [$totalDana, $progress]);
     }
