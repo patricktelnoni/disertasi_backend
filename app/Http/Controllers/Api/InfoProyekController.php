@@ -62,7 +62,7 @@ class InfoProyekController extends Controller
         $totalDana      = 0;
         $nilaiKontrak   = 0;
         $progress       = 0;
-        
+
         if($progressProyek != null){
             foreach($progressProyek as $prog){
                 $totalDana      += $prog->biaya_total;
@@ -74,7 +74,7 @@ class InfoProyekController extends Controller
         }
         
 
-        return new InfoProyekResource(true, 'Detail progress seluruh proyek', $progressProyek, [$totalDana, $progress]);
+        return new InfoProyekResource(true, 'Detail progress seluruh proyek', $progressProyek, ["total_dana" => $totalDana, "progress" => $progress]);
     }
     public function index()
     {

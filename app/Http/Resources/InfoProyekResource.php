@@ -23,6 +23,7 @@ class InfoProyekResource extends JsonResource
         parent::__construct($resource);
         $this->status  = $status;
         $this->message = $message;
+        $this->total  = $total;
 
     }
 
