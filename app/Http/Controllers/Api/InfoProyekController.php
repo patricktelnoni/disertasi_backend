@@ -30,15 +30,47 @@ class InfoProyekController extends Controller
     }
 
     public function getDetailProgress($proyek_id){
-        $proyekList = DB::select("
-            SELECT ip.id, ip.nama_item_pekerjaan, dl.* 
+
+        /*
+        SELECT ip.id, ip.nama_item_pekerjaan, 
+            max(dl.updated_at),
+            ip.harga_satuan,
+            ip.harga_satuan * dl.panjang * dl.lebar * dl.tebal as biaya_total,
+            dl.panjang * dl.lebar * dl.tebal as volume_total
+            
+        FROM item_pekerjaan ip
+        JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
+        WHERE ip.proyek_id = $proyek_id
+        GROUP BY ip.id;
+        */
+        $progressProyek = DB::select("
+            SELECT ip.id, ip.nama_item_pekerjaan, 
+                max(dl.updated_at),
+                tif.nilai_kontrak,
+                ip.harga_satuan,
+                ip.harga_satuan * dl.panjang * dl.lebar * dl.tebal as biaya_total,
+                dl.panjang * dl.lebar * dl.tebal as volume_total,
+                ((dl.panjang * dl.lebar * dl.tebal)/ ip.volume_pekerjaan ) * 100 as progress
+                
             FROM item_pekerjaan ip
             JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
-            WHERE ip.proyek_id = $proyek_id;
+            JOIN table_info_proyek tif on tif.id = ip.proyek_id
+            WHERE ip.proyek_id = $proyek_id
+            GROUP BY ip.id;
             ");
+        
+        $totalDana      = 0;
+        $nilaiKontrak   = 0;
 
-        $total = $this->getTotalDetailProyek($proyek_id);
-        return new InfoProyekResource(true, 'Detail progress seluruh proyek', $proyekList, $total );
+        foreach($progressProyek as $progress){
+            $totalDana      += $progress->biaya_total;
+            $nilaiKontrak   = $progress->nilai_kontrak;
+        }
+
+        $progress = ($totalDana / $nilaiKontrak) * 100;
+        $progress = $progress > 0 ? $progress : 0;
+
+        return new InfoProyekResource(true, 'Detail progress seluruh proyek', $progressProyek, [$totalDana, $progress]);
     }
     public function index()
     {

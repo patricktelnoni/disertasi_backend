@@ -18,21 +18,23 @@ class InfoProyekResource extends JsonResource
     public $resource;
     public $total;
 
-    public function __construct($status, $message, $resource, $total = 0){
+
+    public function __construct($status, $message, $resource, $total = []){
         parent::__construct($resource);
         $this->status  = $status;
         $this->message = $message;
-        $this->total   = $total;
+
     }
 
     public function toArray(Request $request): array
     {
-        if($this->total != 0){
+        if($this->total > 0 ){
             return [
                 'success'   => $this->status,
                 'message'   => $this->message,
                 'total'     => $this->total,
                 'data'      => $this->resource
+  
             ];
         }
         return [

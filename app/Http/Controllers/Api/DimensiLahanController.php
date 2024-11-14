@@ -83,21 +83,19 @@ class DimensiLahanController extends Controller
             $biaya_kumulatif     = $biaya + $past_dimensi_lahan->biaya_kumulatif; 
             $volume_kumulatif    = $volume + $past_dimensi_lahan->volume_kumulatif;
             $progress_kumulatif  = (($volume / $data->volume_pekerjaan) * 100) + $past_dimensi_lahan->persentase_progress;
-            $progress_kumulatif  = $progress_kumulatif>100?100:$progress_kumulatif;
-            
+            $progress_kumulatif  = $progress_kumulatif > 100 ? 100:$progress_kumulatif;
+
             $dimensi_lahan->volume_kumulatif    = $volume_kumulatif;
             $dimensi_lahan->biaya_kumulatif      = $biaya_kumulatif;
             $dimensi_lahan->persentase_progress  = $progress_kumulatif;
         }
         else{
             $dimensi_lahan->volume_kumulatif    = $volume;
-            $dimensi_lahan->biaya_kumulatif = $dimensi_lahan->biaya / $nilai_pekerjaan * 100;
+            $dimensi_lahan->biaya_kumulatif     = $dimensi_lahan->biaya / $nilai_pekerjaan * 100;
             $dimensi_lahan->persentase_progress = $volume / $data->volume_pekerjaan * 100;
         }
        
         $dimensi_lahan->save();
-        
-
         
         return new DimensiLahanResources(true, 'data berhasil ditambahkan',$dimensi_lahan);
     }
