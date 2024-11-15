@@ -44,17 +44,14 @@ class InfoProyekController extends Controller
         GROUP BY ip.id;
         */
         $progressProyek = DB::select("
-            SELECT ip.id, ip.nama_item_pekerjaan, 
-                max(dl.updated_at),
-                tif.nilai_kontrak,
-                ip.harga_satuan,
-                ip.harga_satuan * dl.panjang * dl.lebar * dl.tebal as biaya_total,
-                dl.panjang * dl.lebar * dl.tebal as volume_total,
-                ((dl.panjang * dl.lebar * dl.tebal)/ ip.volume_pekerjaan ) * 100 as progress
-                
-            FROM item_pekerjaan ip
-            JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
-            JOIN table_info_proyek tif on tif.id = ip.proyek_id
+           SELECT ip.id, ip.nama_item_pekerjaan,                
+                tif.nilai_kontrak as nilai_kontrak,        
+                ip.harga_satuan,        
+                sum(ip.harga_satuan * dl.panjang * dl.lebar * dl.tebal) as biaya_total,         
+                sum(dl.panjang * dl.lebar * dl.tebal) as volume_total,     
+            ((dl.panjang * dl.lebar * dl.tebal)/ ip.volume_pekerjaan ) * 100 as progress
+            FROM item_pekerjaan ip JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id 
+            JOIN table_info_proyek tif on tif.id = ip.proyek_id 
             WHERE ip.proyek_id = $proyek_id
             GROUP BY ip.id;
             ");
