@@ -84,12 +84,13 @@ class InfoProyekController extends Controller
         */ 
         //$proyekList = InfoProyek::orderBy('created_at', 'desc')->get();
         $proyekList = DB::select("
-            SELECT  tip.*, MAX(dl.id), MAX(dl.persentase_progress) as persentase_progress
+            SELECT  tip.*, 
+            ((dl.panjang * dl.lebar * dl.tebal)/ ip.volume_pekerjaan ) * 100  as persentase_progress
             FROM `table_info_proyek` tip
             LEFT JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
             LEFT JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
             GROUP BY tip.id
-            ORDER BY dl.id DESC
+            ORDER BY tip.id DESC
             ");
         return new InfoProyekResource(true, 'Detail seluruh proyek', $proyekList);
     }
