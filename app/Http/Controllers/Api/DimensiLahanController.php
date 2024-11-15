@@ -57,44 +57,9 @@ class DimensiLahanController extends Controller
         $dimensi_lahan->item_pekerjaan_id   = $request->id_item_pekerjaan;
 
         $volume = $request->panjang_pekerjaan * $request->lebar_pekerjaan * $request->tebal_pekerjaan;
-
-        $data   = ItemPekerjaan::where('id', $request->id_item_pekerjaan)->first();
-
-        $biaya              = $volume * $data->harga_satuan;
-        $nilai_pekerjaan    = $data->volume_pekerjaan * $data->harga_satuan;
         
         $dimensi_lahan->volume_pekerjaan    = $volume;
-        $dimensi_lahan->biaya               = $biaya;
-        //$dimensi_lahan->nilai_pekerjaan     = $nilai_pekerjaan;
 
-        //$past_dimensi_lahan = DimensiLahanModel::where('item_pekerjaan_id', $request->id_item_pekerjaan)->orderBy('id', 'desc')->first();    
-        $past_dimensi_lahan = DB::select("
-                    SELECT ip.proyek_id, 
-                        MAX(dl.biaya_kumulatif) as biaya_kumulatif, 
-                        MAX(dl.volume_kumulatif) as volume_kumulatif,
-                        MAX(dl.persentase_progress) as persentase_progress
-                    FROM `item_pekerjaan` ip
-                    LEFT JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
-                    WHERE ip.proyek_id = $request->proyek_id
-                    GROUP BY ip.proyek_id
-                    ORDER BY dl.id DESC
-                    ")[0];
-        if($past_dimensi_lahan){
-            $biaya_kumulatif     = $biaya + $past_dimensi_lahan->biaya_kumulatif; 
-            $volume_kumulatif    = $volume + $past_dimensi_lahan->volume_kumulatif;
-            $progress_kumulatif  = (($volume / $data->volume_pekerjaan) * 100) + $past_dimensi_lahan->persentase_progress;
-            $progress_kumulatif  = $progress_kumulatif > 100 ? 100:$progress_kumulatif;
-
-            $dimensi_lahan->volume_kumulatif    = $volume_kumulatif;
-            $dimensi_lahan->biaya_kumulatif      = $biaya_kumulatif;
-            $dimensi_lahan->persentase_progress  = $progress_kumulatif;
-        }
-        else{
-            $dimensi_lahan->volume_kumulatif    = $volume;
-            $dimensi_lahan->biaya_kumulatif     = $dimensi_lahan->biaya / $nilai_pekerjaan * 100;
-            $dimensi_lahan->persentase_progress = $volume / $data->volume_pekerjaan * 100;
-        }
-       
         $dimensi_lahan->save();
         
         return new DimensiLahanResources(true, 'data berhasil ditambahkan',$dimensi_lahan);
