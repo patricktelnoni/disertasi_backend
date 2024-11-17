@@ -76,21 +76,33 @@ class InfoProyekController extends Controller
     public function index()
     {
         /*
-        SELECT tip.*,  MAX(dl.id), dl.persentase_progress
+        SELECT  tip.*, 
+            (dl.total_biaya_pekerjaan  / tip.nilai_kontrak ) * 100  as persentase_progress
         FROM `table_info_proyek` tip
-        LEFT JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
-        LEFT JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
-        ORDER BY dl.id DESC;
+        INNER JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
+        INNER JOIN (
+            SELECT sum(d.volume_pekerjaan * i.harga_satuan) as total_biaya_pekerjaan, d.item_pekerjaan_id
+            FROM dimensi_lahan d
+            JOIN item_pekerjaan i on i.id = d.item_pekerjaan_id
+            GROUP BY i.id
+        ) dl ON ip.id = dl.item_pekerjaan_id
+        GROUP BY tip.id
+        ORDER BY tip.id DESC;
         */ 
         //$proyekList = InfoProyek::orderBy('created_at', 'desc')->get();
         $proyekList = DB::select("
             SELECT  tip.*, 
-            (dl.volume_pekerjaan / ip.volume_pekerjaan ) * 100  as persentase_progress
+                (dl.total_biaya_pekerjaan  / tip.nilai_kontrak ) * 100  as persentase_progress
             FROM `table_info_proyek` tip
-            LEFT JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
-            LEFT JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
+            INNER JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
+            INNER JOIN (
+                SELECT sum(d.volume_pekerjaan * i.harga_satuan) as total_biaya_pekerjaan, d.item_pekerjaan_id
+                FROM dimensi_lahan d
+                JOIN item_pekerjaan i on i.id = d.item_pekerjaan_id
+                GROUP BY i.id
+            ) dl ON ip.id = dl.item_pekerjaan_id
             GROUP BY tip.id
-            ORDER BY tip.id DESC
+            ORDER BY tip.id DESC;
             ");
         return new InfoProyekResource(true, 'Detail seluruh proyek', $proyekList);
     }
