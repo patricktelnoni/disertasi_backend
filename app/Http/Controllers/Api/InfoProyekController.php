@@ -32,19 +32,7 @@ class InfoProyekController extends Controller
     public function getDetailProgress($proyek_id){
 
         /*
-        SELECT ip.id, ip.nama_item_pekerjaan, 
-            max(dl.updated_at),
-            ip.harga_satuan,
-            ip.harga_satuan * dl.panjang * dl.lebar * dl.tebal as biaya_total,
-            dl.panjang * dl.lebar * dl.tebal as volume_total
-            
-        FROM item_pekerjaan ip
-        JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id
-        WHERE ip.proyek_id = $proyek_id
-        GROUP BY ip.id;
-        */
-        $progressProyek = DB::select("
-           SELECT ip.id, ip.nama_item_pekerjaan,                
+        SELECT ip.id, ip.nama_item_pekerjaan,                
                 tif.nilai_kontrak as nilai_kontrak,        
                 ip.harga_satuan,        
                 sum(ip.harga_satuan * dl.volume_pekerjaan) as biaya_total,         
@@ -54,6 +42,22 @@ class InfoProyekController extends Controller
             JOIN table_info_proyek tif on tif.id = ip.proyek_id 
             WHERE ip.proyek_id = $proyek_id
             GROUP BY ip.id;
+        */
+        $progressProyek = DB::select("
+                SELECT * 
+                FROM item_pekerjaan item 
+                LEFT JOIN (
+                    SELECT ip.id as id, 
+                            sum( ip.harga_satuan * dl.volume_pekerjaan ) as biaya_total,         
+                            sum( dl.volume_pekerjaan ) as volume_total,     
+                        ( dl.volume_pekerjaan / ip.volume_pekerjaan ) * 100 as progress
+                    FROM item_pekerjaan ip 
+                    JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id 
+                    GROUP BY dl.item_pekerjaan_id
+                ) total on item.id = total.id
+                WHERE item.proyek_id = $proyek_id
+                GROUP BY item.id;
+           
             ");
         
         $totalDana      = 0;
@@ -83,14 +87,14 @@ class InfoProyekController extends Controller
                 LEFT JOIN 
                 (
                     SELECT tip.id AS id,  
-                                (dl.total_biaya_pekerjaan  / tip.nilai_kontrak ) * 100  as persentase_progress
+                        (dl.total_biaya_pekerjaan  / tip.nilai_kontrak ) * 100  as persentase_progress
                     FROM `table_info_proyek` tip
                     INNER JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
                     INNER JOIN (
-                                    SELECT sum(d.volume_pekerjaan * i.harga_satuan) as total_biaya_pekerjaan, d.item_pekerjaan_id
-                                    FROM dimensi_lahan d
-                                    JOIN item_pekerjaan i on i.id = d.item_pekerjaan_id
-                                    GROUP BY i.id
+                        SELECT sum(d.volume_pekerjaan * i.harga_satuan) as total_biaya_pekerjaan, d.item_pekerjaan_id
+                        FROM dimensi_lahan d
+                        JOIN item_pekerjaan i on i.id = d.item_pekerjaan_id
+                        GROUP BY i.id
                     ) dl ON ip.id = dl.item_pekerjaan_id
                     GROUP BY tip.id
                     ORDER BY tip.id DESC
