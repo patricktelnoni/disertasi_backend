@@ -71,11 +71,13 @@ class InfoProyekController extends Controller
        
         //$proyekList = InfoProyek::orderBy('created_at', 'desc')->get();
         $proyekList = DB::select("
-            SELECT ti.*, (persen.progress_dana/ti.nilai_kontrak) as persentase_progress
+            SELECT ti.*, IF((persen.progress_dana/ti.nilai_kontrak)  >= 1, 
+				100, 
+                (persen.progress_dana/ti.nilai_kontrak) * 100) as persentase_progress
             FROM table_info_proyek ti
             LEFT JOIN (
                 SELECT tip.id AS id,  
-                    SUM(dl.total_biaya_pekerjaan ) * 100  as progress_dana
+                    SUM(dl.total_biaya_pekerjaan ) as progress_dana
                 FROM `table_info_proyek` tip
                 INNER JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
                 INNER JOIN (
