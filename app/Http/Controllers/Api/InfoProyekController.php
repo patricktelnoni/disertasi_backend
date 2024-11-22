@@ -71,24 +71,22 @@ class InfoProyekController extends Controller
        
         //$proyekList = InfoProyek::orderBy('created_at', 'desc')->get();
         $proyekList = DB::select("
-            SELECT ti.*, persen.persentase_progress
-                FROM table_info_proyek ti
-                LEFT JOIN 
-                (
-                    SELECT tip.id AS id,  
-                        (dl.total_biaya_pekerjaan  / tip.nilai_kontrak ) * 100  as persentase_progress
-                    FROM `table_info_proyek` tip
-                    INNER JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
-                    INNER JOIN (
-                        SELECT sum(d.volume_pekerjaan * i.harga_satuan) as total_biaya_pekerjaan, d.item_pekerjaan_id
-                        FROM dimensi_lahan d
-                        JOIN item_pekerjaan i on i.id = d.item_pekerjaan_id
-                        GROUP BY i.id
-                    ) dl ON ip.id = dl.item_pekerjaan_id
-                    GROUP BY tip.id
-                    ORDER BY tip.id DESC
-                ) persen on ti.id = persen.id
-                 ORDER by ti.updated_at DESC;
+            SELECT ti.*, (persen.progress_dana/ti.nilai_kontrak) as persentase_progress
+            FROM table_info_proyek ti
+            LEFT JOIN (
+                SELECT tip.id AS id,  
+                    SUM(dl.total_biaya_pekerjaan ) * 100  as progress_dana
+                FROM `table_info_proyek` tip
+                INNER JOIN item_pekerjaan ip ON tip.id = ip.proyek_id
+                INNER JOIN (
+                    SELECT sum(d.volume_pekerjaan * i.harga_satuan) as total_biaya_pekerjaan, d.item_pekerjaan_id
+                    FROM dimensi_lahan d
+                    JOIN item_pekerjaan i on i.id = d.item_pekerjaan_id
+                    GROUP BY i.id
+                ) dl ON ip.id = dl.item_pekerjaan_id
+                GROUP BY tip.id
+            ) persen on ti.id = persen.id
+            ORDER by ti.updated_at DESC;
             ");
         return new InfoProyekResource(true, 'Detail seluruh proyek', $proyekList);
     }
