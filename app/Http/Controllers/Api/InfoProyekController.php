@@ -32,16 +32,20 @@ class InfoProyekController extends Controller
     public function getDetailProgress($proyek_id){
 
         $progressProyek = DB::select("
-                SELECT * 
+                SELECT IF(total.volume_total > item.volume_pekerjaan, item.volume_pekerjaan, total.volume_total) as volume_total,
+                    IF(total.biaya_total > total.max_biaya, total.max_biaya, total.biaya_total) as biaya_total,
+                    item.*
                 FROM item_pekerjaan item 
                 LEFT JOIN (
-                    SELECT ip.id as id, 
-                            sum( ip.harga_satuan * dl.volume_pekerjaan ) as biaya_total,         
-                            sum( dl.volume_pekerjaan ) as volume_total,     
-                        ( dl.volume_pekerjaan / ip.volume_pekerjaan ) * 100 as progress
-                    FROM item_pekerjaan ip 
-                    JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id 
-                    GROUP BY dl.item_pekerjaan_id
+                        SELECT ip.id as id, 
+                                sum( ip.harga_satuan * dl.volume_pekerjaan ) as biaya_total,         
+                                sum( dl.volume_pekerjaan ) as volume_total,  
+                                (ip.volume_pekerjaan * ip.harga_satuan) as max_biaya,
+                                dl.volume_pekerjaan,
+                                ( dl.volume_pekerjaan / ip.volume_pekerjaan ) * 100 as progress
+                        FROM item_pekerjaan ip 
+                        JOIN dimensi_lahan dl ON ip.id = dl.item_pekerjaan_id 
+                        GROUP BY dl.item_pekerjaan_id
                 ) total on item.id = total.id
                 JOIN table_info_proyek tif ON item.proyek_id = tif.id
                 WHERE item.proyek_id = $proyek_id
