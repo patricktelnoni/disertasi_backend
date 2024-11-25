@@ -34,8 +34,8 @@ class InfoProyekController extends Controller
         $progressProyek = DB::select("
                 SELECT IF(total.volume_total > item.volume_pekerjaan, item.volume_pekerjaan, total.volume_total) as volume_total,
                     IF(total.biaya_total > total.max_biaya, total.max_biaya, total.biaya_total) as biaya_total,
-                    DATE(total.tanggal_dokumentasi) as tanggal_dokumentasi,
-                    item.*, tif.*, total.progress
+                    IFNULL(DATE(total.tanggal_dokumentasi), 0000-00-00) as tanggal_dokumentasi,
+                    item.*, tif.*, IFNULL(total.progress, 0) as progress
                 FROM item_pekerjaan item 
                 LEFT JOIN (
                         SELECT ip.id as id, 
