@@ -16,6 +16,13 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
+    public function show($id){
+        $product = Product::find($id);
+        return response()->json([
+            'data' => $product
+        ], 200);
+    }
+
     public function store(Request $request){
         $details = [
             'name' => $request->name,
