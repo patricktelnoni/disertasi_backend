@@ -17,7 +17,7 @@ class ProductController extends Controller
     }
 
     public function show($id){
-        $product = Product::where('id', $id)->get(['id', 'name', 'description']);
+        $product = Product::where('id', $id)->get(['id', 'name', 'description', 'foto_produk']);
         return response()->json([
             'data' => $product
         ], 200);
