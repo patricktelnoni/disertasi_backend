@@ -20,7 +20,7 @@ class ProductFactory extends Factory
             //
             'name'          => $this->faker->word(),
             'description'   => $this->faker->sentence(),
-            'foto_produk'   => $this->faker->imageUrl(640, 480, 1, true),
+            'foto_produk'   => $this->faker->imageUrl(640, 480),
         ];
     }
 }
