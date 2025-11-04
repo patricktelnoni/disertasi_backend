@@ -18,13 +18,14 @@ class ProductSeeder extends Seeder
     {
         //
 
-        $faker = Faker::create('id_ID');
+        // $faker = Faker::create('id_ID');
 
-        for($i = 0; $i < 10; $i++) {
-            Product::create([
-                'name' => $faker->name,
-                'description' => $faker->text,
-            ]);
-        }
+        // for($i = 0; $i < 10; $i++) {
+        //     Product::create([
+        //         'name' => $faker->name,
+        //         'description' => $faker->text,
+        //     ]);
+        // }
+        Product::factory()->count(100)->create();
     }
 }
