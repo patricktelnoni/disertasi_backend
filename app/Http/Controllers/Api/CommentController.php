@@ -13,6 +13,7 @@ class CommentController extends Controller
     public function index()
     {
         //
+        return CommentResources::collection(Comment::all());
     }
 
     /**
@@ -21,6 +22,16 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         //
+        $comment = [
+            'post_id' => $request->post_id,
+            'user_id' => $request->user_id,
+            'title' => $request->title,
+            'content' => $request->content,
+        ];
+        if(Comment::create($comment)){
+            return response()->json(['message' => 'Comment created successfully'], 201);
+        }
+        return response()->json(['message' => 'Comment creation failed'], 400);    
     }
 
     /**
@@ -29,6 +40,7 @@ class CommentController extends Controller
     public function show(Comment $comment)
     {
         //
+        return Comment::find($comment->id)->toResource(CommentResources::class);
     }
 
     /**
@@ -37,6 +49,13 @@ class CommentController extends Controller
     public function update(Request $request, Comment $comment)
     {
         //
+        $edit = Comment::find($comment->id);
+        $edit->title = $request->title;
+        $edit->content = $request->content;
+        if($edit->save()){
+            return response()->json(['message' => 'Comment updated successfully'], 200);
+        }
+        return response()->json(['message' => 'Comment update failed'], 400)    ;
     }
 
     /**
@@ -45,5 +64,10 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         //
+        $comment = Comment::find($comment->id);
+        if($comment->delete()){    
+            return response()->json(['message' => 'Comment deleted successfully'], 200);
+        }
+        return response()->json(['message' => 'Comment deletion failed'], 400);
     }
 }

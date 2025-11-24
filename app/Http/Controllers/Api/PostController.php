@@ -16,7 +16,6 @@ class PostController extends Controller
     {
         //
         return PostResources::collection(Post::all());
-        
     }
 
     /**
@@ -28,6 +27,7 @@ class PostController extends Controller
         $post = [
             'title' => $request->title,
             'content' => $request->content,
+            'user_id' => $request->user_id,
         ];
         if(Post::create($post)){
             return response()->json(['message' => 'Post created successfully'], 201);
@@ -40,7 +40,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return new PostResources($post);
+        return Post::find($post->id)->toResource(PostResources::class);
     }
 
     /**
@@ -49,6 +49,13 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         //
+        $edit = Post::find($post->id);
+        $edit->title = $request->title;
+        $edit->content = $request->content;
+        if($edit->save()){
+            return response()->json(['message' => 'Post updated successfully'], 200);
+        }
+        return response()->json(['message' => 'Post update failed'], 400);
     }
 
     /**
@@ -57,5 +64,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+        $post = Post::find($post->id);
+        if($post->delete()){
+            return response()->json(['message' => 'Post deleted successfully'], 200);
+        }
+        return response()->json(['message' => 'Post deletion failed'], 400);
     }
 }
