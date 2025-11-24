@@ -26,7 +26,8 @@ class ProductController extends Controller
     public function store(Request $request){
         $details = [
             'name' => $request->name,
-            'description' => $request->description
+            'description' => $request->description,
+            'foto_produk' => isset($request->foto_produk) ? $request->foto_produk : null,
         ];
         Product::create($details);
     }
