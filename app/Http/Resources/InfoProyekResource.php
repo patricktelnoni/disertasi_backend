@@ -24,7 +24,6 @@ class InfoProyekResource extends JsonResource
         $this->status  = $status;
         $this->message = $message;
         $this->total  = $total;
-
     }
 
     public function toArray(Request $request): array

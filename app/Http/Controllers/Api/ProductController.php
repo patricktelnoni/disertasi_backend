@@ -29,7 +29,10 @@ class ProductController extends Controller
             'description' => $request->description,
             'foto_produk' => isset($request->foto_produk) ? $request->foto_produk : null,
         ];
-        Product::create($details);
+        if(Product::create($details)){
+            return response()->json(['message' => 'Product created successfully'], 201);
+        }
+        return response()->json(['message' => 'Product creation failed'], 400);
     }
 
     public function update(Request $request, $id){
