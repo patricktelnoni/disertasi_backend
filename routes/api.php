@@ -8,9 +8,14 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/progress_proyek/{proyek_id}', 'App\Http\Controllers\Api\InfoProyekController@getDetailProgress');
-Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');
-Route::apiResource('posts', 'App\Http\Controllers\Api\PostController');
-Route::apiResource('comments', 'App\Http\Controllers\Api\CommentController');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');
+    Route::apiResource('posts', 'App\Http\Controllers\Api\PostController');
+    Route::apiResource('comments', 'App\Http\Controllers\Api\CommentController');
+});
+Route::post('/register', 'App\Http\Controllers\Api\Auth\RegisterController@_invoke');
+Route::post('/login', 'App\Http\Controllers\Api\Auth\LoginController@_invoke');
 
 Route::apiResource('restorans', 'App\Http\Controllers\Api\RestoranController');
 
