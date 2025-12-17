@@ -9,8 +9,11 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/progress_proyek/{proyek_id}', 'App\Http\Controllers\Api\InfoProyekController@getDetailProgress');
 
+
 Route::apiResource('posts', 'App\Http\Controllers\Api\PostController');
-    Route::apiResource('comments', 'App\Http\Controllers\Api\CommentController');
+Route::apiResource('comments', 'App\Http\Controllers\Api\CommentController');
+Route::get('/posts/{postId}/comments', 'App\Http\Controllers\Api\CommentController@commentsByPost');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');    
     

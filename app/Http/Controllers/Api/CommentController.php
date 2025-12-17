@@ -18,6 +18,17 @@ class CommentController extends Controller
         return CommentResources::collection(Comment::all());
     }
 
+    public function commentsByPost($postId)
+    {
+        //
+        $comments = Comment::whereHas('post', function ($query) use ($postId) {
+            $query->where('id', $postId);
+        })->with('user')->get();
+        return response()->json([
+            "data" => $comments
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

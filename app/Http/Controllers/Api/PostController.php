@@ -40,7 +40,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return Post::find($post->id)->toResource(PostResources::class);
+        return response()->json([
+            "data" => Post::findOrFail($post->id)
+        ]);
     }
 
     /**
