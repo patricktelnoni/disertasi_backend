@@ -23,7 +23,7 @@ class LikesController extends Controller
     {
         //
 
-        $liked - Likes::create([
+        $liked = Likes::create([
             'user_id' => 1,
             'post_id' => $request->post_id,
         ]);
