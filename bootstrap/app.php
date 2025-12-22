@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
+use App\Http\Middleware\CheckTokenExpiration;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -13,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
+        $middleware->appendToGroup('api', [
+            'check.expiration' => CheckTokenExpiration::class,
+        ]);
         App\Http\Middleware\LogRequest::class;
     })
     ->withExceptions(function (Exceptions $exceptions) {
