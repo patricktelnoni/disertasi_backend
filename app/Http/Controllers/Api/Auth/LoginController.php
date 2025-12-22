@@ -36,7 +36,7 @@ class LoginController extends Controller
 
         if(auth()->attempt($credentials)){
             $user   = auth()->user();
-            $token  = $user->createToken('auth_token')->plainTextToken;
+            $token  = $user->createToken('auth_token', now()->addWeek())->plainTextToken;
 
             return response()->json([
                 'user_id' => $user->id,

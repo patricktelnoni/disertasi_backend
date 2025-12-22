@@ -12,7 +12,7 @@ class RegisterController extends Controller
     public function _invoke(Request $request)
     {
         $user = User::create($request->all());
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token', now()->addWeek())->plainTextToken;
         
         return response()->json([
             'message' => 'Register endpoint is working',
