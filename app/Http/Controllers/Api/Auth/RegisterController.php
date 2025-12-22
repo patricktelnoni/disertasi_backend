@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Carbon\Carbon;
 
 class RegisterController extends Controller
 {
@@ -12,7 +13,7 @@ class RegisterController extends Controller
     public function _invoke(Request $request)
     {
         $user = User::create($request->all());
-       $token  = $user->createToken('auth_token', ['*'], now()->plus(weeks: 1))
+       $token  = $user->createToken('auth_token', ['*'], Carbon::now()->addDays(7))
                         ->plainTextToken;
         
         return response()->json([

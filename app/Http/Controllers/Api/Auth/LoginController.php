@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Carbon\Carbon;
 
 class LoginController extends Controller
 {
@@ -36,7 +37,7 @@ class LoginController extends Controller
 
         if(auth()->attempt($credentials)){
             $user   = auth()->user();
-            $token  = $user->createToken('auth_token', ['*'], now()->plus(weeks: 1))
+            $token  = $user->createToken('auth_token', ['*'], Carbon::now()->addDays(7))
                         ->plainTextToken;
 
             return response()->json([
