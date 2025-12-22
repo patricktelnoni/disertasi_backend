@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
-        $middleware->appendToGroup('api', [
+        $middleware->appendToGroup([
             'check.expiration' => CheckTokenExpiration::class,
         ]);
         App\Http\Middleware\LogRequest::class;
