@@ -10,6 +10,22 @@ use App\Models\User;
 class LoginController extends Controller
 {
     //
+
+    public function validateToken(Request $request)
+    {
+        $user = $request->user();
+        if ($user) {
+            return response()->json([
+                'message' => 'Token is valid',
+                'user' => $user,
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Invalid token',
+            ], 401);
+        }
+    }
+    
     public function _invoke(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -23,6 +39,8 @@ class LoginController extends Controller
             $token  = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json([
+                'user_id' => $user->id,
+                'username' => $user->name,
                 'message' => 'Login successful',
                 'access_token' => $token,
                 'token_type' => 'Bearer',
