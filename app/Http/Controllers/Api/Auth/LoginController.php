@@ -12,6 +12,14 @@ class LoginController extends Controller
 {
     //
 
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ]);
+
+    }
     public function validateToken(Request $request)
     {
         $user = $request->user();
@@ -26,7 +34,7 @@ class LoginController extends Controller
             ], 401);
         }
     }
-    
+
     public function _invoke(Request $request)
     {
         $credentials = $request->only('email', 'password');
