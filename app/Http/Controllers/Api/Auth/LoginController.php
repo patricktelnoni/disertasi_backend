@@ -17,7 +17,7 @@ class LoginController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json([
             'message' => 'Successfully logged out'
-        ]);
+        ], 200);
 
     }
     public function validateToken(Request $request)
