@@ -16,8 +16,10 @@ Route::get('/posts/{postId}/comments', 'App\Http\Controllers\Api\CommentControll
 Route::apiResource('likes', 'App\Http\Controllers\Api\LikesController');
 
 Route::middleware(['auth:sanctum', 'check.expiration'])->group(function () {
-    Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');    
-    
+    Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');
+    Route::get('/logout', 'App\Http\Controllers\Api\Auth\LogoutController@_invoke');
+    Route::get('/users/{userId}/posts}', 'App\Http\Controllers\Api\PostsController@getUserPosts');
+
 });
 Route::post('/register', 'App\Http\Controllers\Api\Auth\RegisterController@_invoke');
 Route::post('/login', 'App\Http\Controllers\Api\Auth\LoginController@_invoke');

@@ -32,7 +32,7 @@ class PostController extends Controller
         if(Post::create($post)){
             return response()->json(['message' => 'Post created successfully'], 201);
         }
-        return response()->json(['message' => 'Post creation failed'], 400);    
+        return response()->json(['message' => 'Post creation failed'], 400);
     }
 
     /**
@@ -42,6 +42,13 @@ class PostController extends Controller
     {
         return response()->json([
             "data" => Post::findOrFail($post->id)
+        ]);
+    }
+
+    public function getUserPosts(String $userId){
+        $posts = Post::where('user_id', $userId)->get();
+        return response()->json([
+            "data" => $posts
         ]);
     }
 
