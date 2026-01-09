@@ -6,18 +6,25 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
+use App\Services\ProductServiceInterface;
 
 class ProductController extends Controller
 {
-    //
+    private ProductServiceInterface $products;
+
+    public function __construct(ProductServiceInterface $products)
+    {
+        $this->products = $products;
+    }
+
     public function index()
     {
-        $products = Product::all();
+        $products = $this->products->getAll();
         return ProductResource::collection($products);
     }
 
     public function show($id){
-        $product = Product::where('id', $id)->get(['id', 'name', 'description', 'foto_produk']);
+        $product = $this->products->getById((int) $id);
         return response()->json([
             'data' => $product
         ], 200);
@@ -25,30 +32,30 @@ class ProductController extends Controller
 
     public function store(Request $request){
         $details = [
-            'name'          => $request->name,
-            'description'   => $request->description,
-            'foto_produk'   => isset($request->foto_produk) ? $request->foto_produk : null,
+            'name'          => $request->input('name'),
+            'description'   => $request->input('description'),
+            'foto_produk'   => $request->input('foto_produk'),
         ];
 
-        if(Product::create($details)){
+        if($this->products->create($details)){
             return response()->json(['message' => 'Product created successfully'], 201);
         }
         return response()->json(['message' => 'Product creation failed'], 400);
     }
 
     public function update(Request $request, $id){
-        $product = Product::find($id);
-        $product->name = $request->name;
-        $product->description = $request->description;
-        if($product->save()){
+        $details = [
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+        ];
+        if($this->products->update((int) $id, $details)){
             return response()->json(['message' => 'Product updated successfully'], 200);
         }
         return response()->json(['message' => 'Product update failed'], 400);
     }
 
     public function destroy($id){
-        $product = Product::find($id);
-        if($product->delete()){
+        if($this->products->delete((int) $id)){
             return response()->json(['message' => 'Product deleted successfully'], 200);
         }
         return response()->json(['message' => 'Product delete failed'], 400);

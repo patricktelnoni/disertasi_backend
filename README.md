@@ -21,6 +21,42 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Service Layer Pattern (Project Configuration)
+
+This project is configured to use a Service layer to separate business logic from controllers.
+
+- Service interfaces and implementations live under `app/Services`.
+- Interfaces are bound to implementations in `app/Providers/AppServiceProvider.php` using the container.
+- Controllers receive services via constructor injection and delegate business operations to them.
+
+Current services:
+
+- Posts
+  - Interface: `App\Services\PostServiceInterface`
+  - Implementation: `App\Services\PostService`
+  - Used by: `App\Http\Controllers\Api\PostController`
+- Products
+  - Interface: `App\Services\ProductServiceInterface`
+  - Implementation: `App\Services\ProductService`
+  - Used by: `App\Http\Controllers\Api\ProductController`
+
+How to add a new service:
+
+1. Create an interface in `app/Services`, e.g. `UserServiceInterface`.
+2. Create an implementation in `app/Services`, e.g. `UserService`.
+3. Bind them in `AppServiceProvider::register()`:
+
+   ```php
+   use App\Services\UserServiceInterface;
+   use App\Services\UserService;
+
+   $this->app->bind(UserServiceInterface::class, UserService::class);
+   ```
+
+4. Inject the interface into your controller's constructor and delegate logic to it.
+
+This pattern keeps controllers thin and improves testability and maintainability.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

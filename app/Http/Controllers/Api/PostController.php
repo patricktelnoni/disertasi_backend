@@ -6,16 +6,24 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResources;
 use App\Http\Controllers\Controller;
+use App\Services\PostServiceInterface;
 
 class PostController extends Controller
 {
+    private PostServiceInterface $posts;
+
+    public function __construct(PostServiceInterface $posts)
+    {
+        $this->posts = $posts;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
-        return PostResources::collection(Post::all());
+        return PostResources::collection($this->posts->getAll());
     }
 
     /**
@@ -25,11 +33,11 @@ class PostController extends Controller
     {
         //
         $post = [
-            'title' => $request->title,
-            'content' => $request->content,
-            'user_id' => $request->user_id,
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'user_id' => $request->input('user_id'),
         ];
-        if(Post::create($post)){
+        if($this->posts->create($post)){
             return response()->json(['message' => 'Post created successfully'], 201);
         }
         return response()->json(['message' => 'Post creation failed'], 400);
@@ -41,12 +49,12 @@ class PostController extends Controller
     public function show(Post $post)
     {
         return response()->json([
-            "data" => Post::findOrFail($post->id)
+            "data" => $this->posts->getById($post->id)
         ]);
     }
 
     public function getUserPosts(String $userId){
-        $posts = Post::where('user_id', $userId)->get();
+        $posts = $this->posts->getByUserId($userId);
         return response()->json([
             "data" => $posts
         ]);
@@ -58,10 +66,11 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         //
-        $edit = Post::find($post->id);
-        $edit->title = $request->title;
-        $edit->content = $request->content;
-        if($edit->save()){
+        $payload = [
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ];
+        if($this->posts->update($post, $payload)){
             return response()->json(['message' => 'Post updated successfully'], 200);
         }
         return response()->json(['message' => 'Post update failed'], 400);
@@ -73,8 +82,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
-        $post = Post::find($post->id);
-        if($post->delete()){
+        if($this->posts->delete($post)){
             return response()->json(['message' => 'Post deleted successfully'], 200);
         }
         return response()->json(['message' => 'Post deletion failed'], 400);
