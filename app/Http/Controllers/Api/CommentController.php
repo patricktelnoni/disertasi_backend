@@ -6,27 +6,25 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResources;
+use App\Services\CommentServiceInterface;
 
 class CommentController extends Controller
 {
+    public function __construct(private readonly CommentServiceInterface $comments)
+    {
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-        return CommentResources::collection(Comment::all());
+        return CommentResources::collection($this->comments->getAll());
     }
 
     public function commentsByPost($postId)
     {
-        //
-        $comments = Comment::whereHas('post', function ($query) use ($postId) {
-            $query->where('id', $postId);
-        })->with('user')->get();
-        return response()->json([
-            "data" => $comments
-        ]);
+        $comments = $this->comments->getByPostId((int) $postId);
+        return CommentResources::collection($comments);
     }
 
     /**
@@ -34,17 +32,11 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $comment = [
-            'post_id' => $request->post_id,
-            'user_id' => $request->user_id,
-            'title' => $request->title,
-            'content' => $request->content,
-        ];
-        if(Comment::create($comment)){
+        $data = $request->only(['post_id', 'user_id', 'title', 'content']);
+        if ($this->comments->create($data)) {
             return response()->json(['message' => 'Comment created successfully'], 201);
         }
-        return response()->json(['message' => 'Comment creation failed'], 400);    
+        return response()->json(['message' => 'Comment creation failed'], 400);
     }
 
     /**
@@ -52,8 +44,8 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        //
-        return Comment::find($comment->id)->toResource(CommentResources::class);
+        $found = $this->comments->getById($comment->id);
+        return new CommentResources($found);
     }
 
     /**
@@ -61,14 +53,11 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
-        $edit = Comment::find($comment->id);
-        $edit->title = $request->title;
-        $edit->content = $request->content;
-        if($edit->save()){
+        $data = $request->only(['title', 'content']);
+        if ($this->comments->update($comment, $data)) {
             return response()->json(['message' => 'Comment updated successfully'], 200);
         }
-        return response()->json(['message' => 'Comment update failed'], 400)    ;
+        return response()->json(['message' => 'Comment update failed'], 400);
     }
 
     /**
@@ -76,9 +65,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
-        $comment = Comment::find($comment->id);
-        if($comment->delete()){    
+        if ($this->comments->delete($comment)) {
             return response()->json(['message' => 'Comment deleted successfully'], 200);
         }
         return response()->json(['message' => 'Comment deletion failed'], 400);

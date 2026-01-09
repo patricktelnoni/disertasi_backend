@@ -19,6 +19,7 @@ class CommentService implements CommentServiceInterface
             'title' => $data['title'] ?? null,
             'content' => $data['content'] ?? null,
             'user_id' => $data['user_id'] ?? null,
+            'post_id' => $data['post_id'] ?? null,
         ]);
     }
 
@@ -31,6 +32,12 @@ class CommentService implements CommentServiceInterface
     public function getByUserId(string $userId): Collection
     {
         return Comment::where('user_id', $userId)->get();
+    }
+
+    /** @return Collection<int, Comment> */
+    public function getByPostId(int $postId): Collection
+    {
+        return Comment::where('post_id', $postId)->with('user')->get();
     }
 
     public function update(Comment $comment, array $data): bool

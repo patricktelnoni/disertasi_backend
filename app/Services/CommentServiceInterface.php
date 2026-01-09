@@ -17,6 +17,9 @@ interface CommentServiceInterface
     /** @return Collection<int, Comment> */
     public function getByUserId(string $userId): Collection;
 
+    /** @return Collection<int, Comment> */
+    public function getByPostId(int $postId): Collection;
+
     public function update(Comment $comment, array $data): bool;
 
     public function delete(Comment $comment): bool;
